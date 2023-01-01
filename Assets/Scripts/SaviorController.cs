@@ -13,10 +13,10 @@ public class SaviorController : MonoBehaviour
     Vector2 moveInputVertical;
     Rigidbody2D playerBody;
 
-    float runSpeed = 3f;
-    float jumpForce = 5f;
-    float dragOnGround = 4f;
-    float dragOnWater = 10f;
+    [SerializeField] float runSpeed = 3f;
+    [SerializeField] float jumpForce = 5f;
+    [SerializeField] float dragOnGround = 4f;
+    [SerializeField] float dragOnWater = 10f;
     bool inLadder = false;
     bool isClimbing = false;
     bool isTouchingGround = false;
@@ -35,12 +35,7 @@ public class SaviorController : MonoBehaviour
     void Update()
     {
         run();
-        climb();
-
-        if(inLadder){
-            playerBody.gravityScale = 0.3f;
-        }
-            
+        climb();  
         
         if(isTouchingGround || inLadder)
             playerBody.drag = dragOnGround;
@@ -74,6 +69,7 @@ public class SaviorController : MonoBehaviour
             animator.SetBool("isClimbing", true);
             animator.enabled = false;
             playerSprite.sprite = playerClimbSprite;
+            playerBody.gravityScale = 0.3f;
             Debug.Log("In ladder");
         }
         else if(other.tag == "Water"){
