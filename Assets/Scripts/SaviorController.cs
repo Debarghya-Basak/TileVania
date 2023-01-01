@@ -22,6 +22,7 @@ public class SaviorController : MonoBehaviour
     bool isTouchingGround = false;
     bool isRunning = false;
     bool inWater = false;
+    bool horizontalMovement = false;
 
     void Start()
     {
@@ -67,7 +68,10 @@ public class SaviorController : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other) {
         if(other.tag == "Ladder"){
+            isRunning = false;
             inLadder = true;
+            animator.SetBool("isRunning", false);
+            animator.SetBool("isClimbing", true);
             animator.enabled = false;
             playerSprite.sprite = playerClimbSprite;
             Debug.Log("In ladder");
@@ -101,9 +105,10 @@ public class SaviorController : MonoBehaviour
 
     void OnMoveLeftRight(InputValue inputValue)
     {
-        moveInput = inputValue.Get<Vector2>();
+        if(!isClimbing)
+            moveInput = inputValue.Get<Vector2>();
 
-        if(moveInput != new Vector2(0f,0f)){
+        if(moveInput.x != 0f && !inLadder){
 
             isRunning = true;
             animator.SetBool("isRunning", true);
@@ -134,11 +139,12 @@ public class SaviorController : MonoBehaviour
             Debug.Log("Jump");
         }
 
-        if(moveInputVertical != new Vector2(0f,0f) && inLadder){
+        if(moveInputVertical.y != 0f && inLadder && !isRunning){
             isClimbing = true;
+            animator.SetBool("isClimbing", true);
             Debug.Log("Climbing inside ladder start");
         }
-        else if(moveInputVertical == new Vector2(0f,0f) && inLadder){
+        else if(moveInputVertical.y == 0f && inLadder){
             isClimbing = false;
             Debug.Log("Climbing inside ladder stop");
         }
