@@ -808,6 +808,10 @@
       <Project>{16a8501e-f072-1aa8-b095-939426a70b46}</Project>
       <Name>Unity.2D.IK.Runtime</Name>
     </ProjectReference>
+    <ProjectReference Include="Cinemachine.csproj">
+      <Project>{9217e0d6-ab76-790a-8b48-e0f0ca994ae2}</Project>
+      <Name>Cinemachine</Name>
+    </ProjectReference>
     <ProjectReference Include="Unity.Services.Core.Analytics.csproj">
       <Project>{e2dc0a3b-0be4-6138-2fe5-4bb6cabc90fb}</Project>
       <Name>Unity.Services.Core.Analytics</Name>
@@ -815,6 +819,10 @@
     <ProjectReference Include="Unity.Burst.csproj">
       <Project>{9d0d5b0b-9999-737a-584a-6fc47025c033}</Project>
       <Name>Unity.Burst</Name>
+    </ProjectReference>
+    <ProjectReference Include="com.unity.cinemachine.editor.csproj">
+      <Project>{2b2358a4-accf-9546-cb88-25e869f5f408}</Project>
+      <Name>com.unity.cinemachine.editor</Name>
     </ProjectReference>
     <ProjectReference Include="Unity.VisualScripting.Shared.Editor.csproj">
       <Project>{bb185e86-1992-c9f3-6c18-0997624f9f1c}</Project>

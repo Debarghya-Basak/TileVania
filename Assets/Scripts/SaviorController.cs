@@ -16,10 +16,12 @@ public class SaviorController : MonoBehaviour
     float runSpeed = 3f;
     float jumpForce = 5f;
     float dragOnGround = 4f;
+    float dragOnWater = 10f;
     bool inLadder = false;
     bool isClimbing = false;
     bool isTouchingGround = false;
     bool isRunning = false;
+    bool inWater = false;
 
     void Start()
     {
@@ -39,15 +41,17 @@ public class SaviorController : MonoBehaviour
         }
             
         
-        if(isTouchingGround)
+        if(isTouchingGround || inLadder)
             playerBody.drag = dragOnGround;
+        else if(inWater)
+            playerBody.drag = dragOnWater;
         else 
             playerBody.drag = 0f;
 
     }
 
     private void OnCollisionEnter2D(Collision2D other) {
-        if(other.collider.tag == "Platform"){
+        if(other.collider.tag == "Platform" && !inWater){
             Debug.Log("Touching ground");
             isTouchingGround = true;
         }
@@ -55,7 +59,7 @@ public class SaviorController : MonoBehaviour
     }
 
     private void OnCollisionExit2D(Collision2D other) {
-        if(other.collider.tag == "Platform"){
+        if(other.collider.tag == "Platform" && !inWater){
             Debug.Log("Not touching ground");
             isTouchingGround = false;
         }
@@ -64,21 +68,33 @@ public class SaviorController : MonoBehaviour
     private void OnTriggerEnter2D(Collider2D other) {
         if(other.tag == "Ladder"){
             inLadder = true;
-            //animator.enabled = false;
+            animator.enabled = false;
             playerSprite.sprite = playerClimbSprite;
             Debug.Log("In ladder");
+        }
+        else if(other.tag == "Water"){
+            inWater = true;
+            animator.enabled = false;
+            playerSprite.sprite = playerIdleSprite;
+            isTouchingGround = true;
+            Debug.Log("In water");
         }
     }
 
     private void OnTriggerExit2D(Collider2D other) {
         if(other.tag == "Ladder"){
-            //animator.enabled = true;
+            animator.enabled = true;
             animator.SetBool("isClimbing", false);
-            playerSprite.sprite = playerIdleSprite;
             inLadder = false;
             isClimbing = false;
             playerBody.gravityScale = 0.98f;
             Debug.Log("Outside ladder");
+        }
+        else if(other.tag == "Water"){
+            inWater = false;
+            animator.enabled = true;
+            isTouchingGround = false;
+            Debug.Log("Outside water");
         }
             
     }
@@ -138,14 +154,14 @@ public class SaviorController : MonoBehaviour
 
     void climb(){
 
-        if(isClimbing){
+        if(isClimbing && inLadder){
             playerBody.velocity = new Vector2(0f,moveInputVertical.y * runSpeed);
             animator.enabled = true;
             animator.SetBool("isClimbing", true);
         }
-        // else{
-        //     animator.enabled = false;
-        // }
+        else if(!isClimbing && inLadder){
+            animator.enabled = false;
+        }
 
     }
 }
