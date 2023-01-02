@@ -6,6 +6,7 @@ using UnityEngine.SceneManagement;
 public class GameController : MonoBehaviour
 {
     [SerializeField] int playerLife = 3;
+    int tempCount = 0;
     private void Awake() {
         if(FindObjectsOfType<GameController>().Length > 1)
             Destroy(gameObject);
@@ -21,16 +22,22 @@ public class GameController : MonoBehaviour
     }
 
     public void nextLevel(){
-        StartCoroutine(changeToNextLevel());
+        if(tempCount == 0){
+            StartCoroutine(changeToNextLevel());
+            tempCount++;
+        }
+            
     }
 
     IEnumerator changeToNextLevel(){
         yield return new WaitForSecondsRealtime(2);
-        int len = SceneManager.GetAllScenes().Length;
-        if(SceneManager.GetActiveScene().buildIndex < len-1)
+        int len = SceneManager.sceneCount;
+        if(SceneManager.GetActiveScene().buildIndex < len)
             SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
         else
             SceneManager.LoadScene(0);
+        tempCount = 0;
+        Debug.Log(tempCount);
     }
 
     IEnumerator reduceLife(){
