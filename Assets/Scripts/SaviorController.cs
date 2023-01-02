@@ -8,6 +8,8 @@ public class SaviorController : MonoBehaviour
     SpriteRenderer playerSprite;
     [SerializeField] Sprite playerClimbSprite;
     [SerializeField] Sprite playerIdleSprite;
+    [SerializeField] Sprite playerUnAliveSprite;
+    CapsuleCollider2D playerCollider;
     Animator animator;
     Vector2 moveInput;
     Vector2 moveInputVertical;
@@ -23,20 +25,24 @@ public class SaviorController : MonoBehaviour
     bool isRunning = false;
     bool inWater = false;
     bool horizontalMovement = false;
+    bool isAlive = true;
 
     void Start()
     {
         playerBody = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
         playerSprite = GetComponent<SpriteRenderer>();
+        playerCollider = GetComponent<CapsuleCollider2D>();
 
     }
 
     void Update()
     {
-        run();
-        climb();  
-        
+        if(isAlive){
+            run();
+            climb();  
+        }
+         
         if(isTouchingGround || inLadder)
             playerBody.drag = dragOnGround;
         else if(inWater)
@@ -78,6 +84,9 @@ public class SaviorController : MonoBehaviour
             playerSprite.sprite = playerIdleSprite;
             isTouchingGround = true;
             Debug.Log("In water");
+        }
+        else if(other.tag == "Enemy"){
+            unAlived();
         }
     }
 
@@ -129,7 +138,7 @@ public class SaviorController : MonoBehaviour
 
         moveInputVertical = inputValue.Get<Vector2>();
 
-        if(isTouchingGround && !inLadder && moveInputVertical.y != 0f){
+        if(isTouchingGround && !inLadder && moveInputVertical.y != 0f && isAlive){
 
             playerBody.velocity = new Vector2(0f, jumpForce);
             Debug.Log("Jump");
@@ -165,5 +174,19 @@ public class SaviorController : MonoBehaviour
             animator.enabled = false;
         }
 
+    }
+
+    void unAlived(){
+        isAlive = false;
+        animator.enabled = false;
+        playerSprite.sprite = playerUnAliveSprite;
+        isTouchingGround = false;
+        playerBody.velocity += new Vector2(0f, 5f);
+        playerCollider.isTrigger = true;
+        Invoke("destroyPlayer", 2);
+    }
+
+    void destroyPlayer(){
+        Destroy(gameObject);
     }
 }

@@ -37,6 +37,7 @@
   </PropertyGroup>
   <ItemGroup>
      <Compile Include="Assets\Scripts\SaviorController.cs" />
+     <Compile Include="Assets\Scripts\EnemyController.cs" />
     <Reference Include="UnityEngine">
         <HintPath>F:\STORAGE\Programs\UNITY\2021.3.15f1\Editor\Data\Managed\UnityEngine\UnityEngine.dll</HintPath>
     </Reference>
