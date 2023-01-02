@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 
 public class SaviorController : MonoBehaviour
 {
@@ -59,6 +60,10 @@ public class SaviorController : MonoBehaviour
             Debug.Log("Touching ground");
             isTouchingGround = true;
         }
+        if(playerFeetCollider.IsTouchingLayers(LayerMask.GetMask("Platform Layer")) && inWater){
+            Debug.Log("Touching ground in water");
+            unAlived();
+        }
         if(other.collider.tag == "Enemy" && playerFeetCollider.IsTouchingLayers(LayerMask.GetMask("Enemy Layer"))){
             Destroy(other.gameObject);
         }
@@ -83,28 +88,34 @@ public class SaviorController : MonoBehaviour
             playerBody.gravityScale = 0.3f;
             Debug.Log("In ladder");
         }
-        else if(other.tag == "Water"){
+        if(other.tag == "Water" && isAlive){
             inWater = true;
             animator.enabled = false;
             playerSprite.sprite = playerIdleSprite;
             isTouchingGround = true;
             Debug.Log("In water");
         }
-        else if(other.tag == "Enemy" && !playerFeetCollider.IsTouchingLayers(LayerMask.GetMask("Enemy Layer"))){
+        if(other.tag == "Enemy" && !playerFeetCollider.IsTouchingLayers(LayerMask.GetMask("Enemy Layer"))){
             unAlived();
         }
     }
 
     private void OnTriggerExit2D(Collider2D other) {
         if(other.tag == "Ladder"){
-            animator.enabled = true;
             animator.SetBool("isClimbing", false);
+            if(!inWater){
+                animator.enabled = true;
+                animator.SetBool("isRunning", true);
+            }
+            else{
+                animator.enabled = false;
+            }
             inLadder = false;
             isClimbing = false;
             playerBody.gravityScale = 0.98f;
             Debug.Log("Outside ladder");
         }
-        else if(other.tag == "Water"){
+        else if(other.tag == "Water" && isAlive){
             inWater = false;
             animator.enabled = true;
             isTouchingGround = false;
@@ -133,6 +144,11 @@ public class SaviorController : MonoBehaviour
 
             isRunning = false;
             animator.SetBool("isRunning", false);
+
+            if(moveInput.x<0)
+                playerSprite.flipX = true;
+            else if(moveInput.x>0)
+                playerSprite.flipX = false;
         }    
 
         Debug.Log(moveInput);
@@ -190,9 +206,14 @@ public class SaviorController : MonoBehaviour
         playerCollider.enabled = false;
         playerFeetCollider.enabled = false;
         Invoke("destroyPlayer", 2);
+        Invoke("loadScene",2);
     }
 
     void destroyPlayer(){
         Destroy(gameObject);
+    }
+    
+    void loadScene(){
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 }
