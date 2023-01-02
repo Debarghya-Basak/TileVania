@@ -27,7 +27,7 @@ public class SaviorController : MonoBehaviour
     bool isRunning = false;
     bool inWater = false;
     bool horizontalMovement = false;
-    bool isAlive = true;
+    public bool isAlive = true;
 
     void Start()
     {
@@ -206,14 +206,11 @@ public class SaviorController : MonoBehaviour
         playerCollider.enabled = false;
         playerFeetCollider.enabled = false;
         Invoke("destroyPlayer", 2);
-        Invoke("loadScene",2);
+        FindObjectOfType<GameController>().controlPlayerLife();
     }
 
     void destroyPlayer(){
         Destroy(gameObject);
     }
-    
-    void loadScene(){
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
-    }
+
 }
