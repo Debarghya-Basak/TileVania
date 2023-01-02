@@ -18,7 +18,7 @@ GameObject:
   - component: {fileID: 7338695779573328207}
   m_Layer: 0
   m_Name: Savior
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -192,6 +192,7 @@ MonoBehaviour:
   jumpForce: 5
   dragOnGround: 4
   dragOnWater: 10
+  isAlive: 1
 --- !u!114 &7338695779573328207
 MonoBehaviour:
   m_ObjectHideFlags: 0
