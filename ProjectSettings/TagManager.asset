@@ -56,3 +56,6 @@ TagManager:
   - name: Platform Layer
     uniqueID: 3029025039
     locked: 0
+  - name: Dangerous Layer
+    uniqueID: 381836759
+    locked: 0
