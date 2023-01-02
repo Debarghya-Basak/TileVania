@@ -8,6 +8,7 @@ TagManager:
   - Ladder
   - Water
   - Enemy
+  - BarGuard
   layers:
   - Default
   - TransparentFX
