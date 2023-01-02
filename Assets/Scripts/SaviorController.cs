@@ -10,6 +10,7 @@ public class SaviorController : MonoBehaviour
     [SerializeField] Sprite playerIdleSprite;
     [SerializeField] Sprite playerUnAliveSprite;
     CapsuleCollider2D playerCollider;
+    BoxCollider2D playerFeetCollider;
     Animator animator;
     Vector2 moveInput;
     Vector2 moveInputVertical;
@@ -33,6 +34,7 @@ public class SaviorController : MonoBehaviour
         animator = GetComponent<Animator>();
         playerSprite = GetComponent<SpriteRenderer>();
         playerCollider = GetComponent<CapsuleCollider2D>();
+        playerFeetCollider = GetComponent<BoxCollider2D>();
 
     }
 
@@ -53,15 +55,18 @@ public class SaviorController : MonoBehaviour
     }
 
     private void OnCollisionEnter2D(Collision2D other) {
-        if(other.collider.tag == "Platform" && !inWater){
+        if(playerFeetCollider.IsTouchingLayers(LayerMask.GetMask("Platform Layer")) && !inWater){
             Debug.Log("Touching ground");
             isTouchingGround = true;
+        }
+        if(other.collider.tag == "Enemy" && playerFeetCollider.IsTouchingLayers(LayerMask.GetMask("Enemy Layer"))){
+            Destroy(other.gameObject);
         }
         
     }
 
     private void OnCollisionExit2D(Collision2D other) {
-        if(other.collider.tag == "Platform" && !inWater){
+        if(!playerFeetCollider.IsTouchingLayers(LayerMask.GetMask("Platform Layer")) && !inWater){
             Debug.Log("Not touching ground");
             isTouchingGround = false;
         }
@@ -85,7 +90,7 @@ public class SaviorController : MonoBehaviour
             isTouchingGround = true;
             Debug.Log("In water");
         }
-        else if(other.tag == "Enemy"){
+        else if(other.tag == "Enemy" && !playerFeetCollider.IsTouchingLayers(LayerMask.GetMask("Enemy Layer"))){
             unAlived();
         }
     }
@@ -138,7 +143,7 @@ public class SaviorController : MonoBehaviour
 
         moveInputVertical = inputValue.Get<Vector2>();
 
-        if(isTouchingGround && !inLadder && moveInputVertical.y != 0f && isAlive){
+        if(playerFeetCollider.IsTouchingLayers(LayerMask.GetMask("Platform Layer")) && !inLadder && moveInputVertical.y != 0f && isAlive){
 
             playerBody.velocity = new Vector2(0f, jumpForce);
             Debug.Log("Jump");
@@ -181,8 +186,9 @@ public class SaviorController : MonoBehaviour
         animator.enabled = false;
         playerSprite.sprite = playerUnAliveSprite;
         isTouchingGround = false;
-        playerBody.velocity += new Vector2(0f, 5f);
-        playerCollider.isTrigger = true;
+        playerBody.velocity = new Vector2(0f, 5f);
+        playerCollider.enabled = false;
+        playerFeetCollider.enabled = false;
         Invoke("destroyPlayer", 2);
     }
 
